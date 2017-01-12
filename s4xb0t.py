@@ -8,6 +8,8 @@ import discord
 import asyncio
 import random
 from time import gmtime, strftime
+import pickle
+import os.path
 
 client = discord.Client()
 
@@ -32,6 +34,10 @@ def on_ready():
     print(client.user.id)
     print('------')
 
+    if os.path.exists(config.inv_path) == True:
+        with open (config.inv_path, 'rb') as handle:
+            players = pickle.loads(handle.read())
+
 """
 @client.event
 @asyncio.coroutine
@@ -46,6 +52,8 @@ def on_message(message):
     if message.author.name in config.mods:
         if message.content.startswith('!stop'):
             print ((strftime("%Y-%m-%d %H:%M:%S", gmtime()))+' Stopped by '+message.author.name)
+            with open(config.inv_path, 'wb') as handle:
+                pickle.dump(players, handle)
             exit()
         elif message.content.startswith('!show busy'):
             if len(busy_users)==0:
@@ -63,6 +71,10 @@ def on_message(message):
             players[message.author].gold += int(l[1])
             yield from client.send_message(message.author, 'Minted '+str(l[1])+' gold')
             print ((strftime("%Y-%m-%d %H:%M:%S", gmtime()))+' '+message.author.name+' Minted '+str(l[1])+' gold')
+        elif message.content.startswith('!save'):
+            with open(config.inv_path, 'wb') as handle:
+                pickle.dump(players, handle)
+            print ((strftime("%Y-%m-%d %H:%M:%S", gmtime()))+' Saved by '+message.author.name)
 
     if message.author == client.user:
         return
