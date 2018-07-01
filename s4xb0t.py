@@ -1,7 +1,8 @@
 #Link to join a server
-#https://discordapp.com/oauth2/authorize?client_id=217887176308817920&scope=bot&permissions=0
+#https://discordapp.com/oauth2/authorize?client_id=462876781163053063&scope=bot&permissions=0
 
 import config
+import configtoken
 import text
 import dungeon
 import discord
@@ -40,7 +41,7 @@ def on_message(message):
 @asyncio.coroutine
 def on_message(message):
 
-    if message.author.name in config.mods:
+    if message.author.id in config.mods:
         if message.content.startswith('!stop'):
             print ((strftime("%Y-%m-%d %H:%M:%S", gmtime()))+' Stopped by '+message.author.name)
             exit()
@@ -68,7 +69,7 @@ def on_message(message):
 
     elif message.content.startswith('!help'):
         yield from client.send_message(message.channel, text.help_msg)
-        if message.author.name in config.mods:
+        if message.author.id in config.mods:
             yield from client.send_message(message.author, text.mod_help)
 
     elif message.content.startswith('!changelog'):
@@ -367,6 +368,6 @@ def on_message(message):
   
 
         busy_users.remove(message.author.name)
-client.run(config.token)
+client.run(configtoken.token)
 
 
